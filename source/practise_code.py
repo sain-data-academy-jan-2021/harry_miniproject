@@ -147,5 +147,5 @@ def update_item_in_list():
             pass
         else:
             update number
-    
+    print hello
     
