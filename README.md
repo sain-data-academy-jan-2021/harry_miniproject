@@ -1,2 +1,2 @@
 # harry_miniproject
-Harry's mini-project
+Harry's Mini-Project
