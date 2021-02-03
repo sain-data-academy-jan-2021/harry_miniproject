@@ -1,2 +1,2 @@
 # harry_miniproject
-My test mini-project
+Harry's mini-project
