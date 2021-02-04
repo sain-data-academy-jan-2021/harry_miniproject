@@ -84,24 +84,19 @@ def product_menu():
 
     elif product_choice == "3":
             app_functions.app_title()
-            response = app_functions.update_list(
-                "list_data/product_information.csv", product_information
-            )
+            response = app_functions.update_item_in_list('product', 'price', product_information)
             if not response:
                 app_functions.app_title()
                 product_menu()
             else:
                 app_data.export_data_from_list(
-                    "list_data/product_information.csv", product_information
-                )
+                    "list_data/product_information.csv", product_information)
                 app_functions.app_title()
                 continue_option("product_menu")
 
     elif product_choice == "4":
             app_functions.app_title()
-            response = app_functions.remove_list(
-                "list_data/product_information.csv", product_information
-            )
+            response = app_functions.remove_item_in_list('product', product_information)
             if not response:
                 app_functions.app_title()
                 product_menu()
@@ -142,39 +137,35 @@ def courier_menu():
             courier_menu()
         else:
             app_data.export_data_from_list(
-                "courier_information.txt", courier_information
+                "courier_information.csv", courier_information
             )
             app_functions.app_title()
             continue_option("courier_menu")
 
     elif courier_menu_choice == "3":
         app_functions.app_title()
-        response = app_functions.update_list(
-            "courier_information.txt", courier_information
-        )
+        response = app_functions.update_item_in_list('courier', 'phone number', courier_information)
         if not response:
             app_functions.app_title()
             courier_menu()
 
         else:
             app_data.export_data_from_list(
-                "courier_information.txt", courier_information
+                "courier_information.csv", courier_information
             )
             app_functions.app_title()
             continue_option("courier_menu")
 
     elif courier_menu_choice == "4":
         app_functions.app_title()
-        response = app_functions.remove_list(
-            "courier_information.txt", courier_information
-        )
+        response = app_functions.remove_item_in_list('courier', courier_information)
         if not response:
             app_functions.app_title()
             courier_menu()
 
         else:
             app_data.export_data_from_list(
-                "courier_information.txt", courier_information
+                "courier_information.csv", courier_information
             )
             app_functions.app_title()
             continue_option("courier_menu")

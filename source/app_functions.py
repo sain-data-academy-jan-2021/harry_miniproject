@@ -130,67 +130,47 @@ def add_to_list(item, list):
                     return list
 
 
-def update_list(filename, list):
-    print_list(list)
+def update_item_in_list(product_or_courier, secondary_info, list):
+        for x in list:
+            print(x)
+        index_choice = input(f'\nEnter 0 to cancel.\n\nWhat is the index of the {product_or_courier} you would like to update?: ... ').capitalize()
+        if index_choice == '0':
+            return []
+        else:
+            index = int(index_choice)
+            app_title()
+            print('Leave blank and press enter if you do not want to update')
+            first_value = input('\nWould you like to update the name?: ... ').capitalize()
+            if first_value == '':
+                pass
+            else:
+                list[index - 1]['Name'] = first_value
+            second_value = input(f'Would you like to update the {secondary_info}?: ... ').capitalize()
+            if second_value == '':
+                pass
+            else:
+                list[index - 1][secondary_info] = second_value
+            for x in list:
+                print(x)
+            input(f"\n{product_or_courier.capitalize()} {index_choice} has been updated.\nPress enter to continue: ... ")
+            return list
 
-    if filename == "couriers_list.txt":
-        var_1 = "courier"
+def remove_item_in_list(product_or_courier, list):
+        for x in list:
+            print(x)
+        index_choice = input(f'\nEnter 0 to cancel.\n\nWhat is the index of the {product_or_courier} you would like to remove?: ... ').capitalize()
+        if index_choice == '0':
+            return []
+        elif len(list) == 0:
+            input(f"There is no {product_or_courier} to remove.\nPress enter to continue: ... ")
+        else:
+            index = int(index_choice)
+            del list[index - 1]
+            for x in list:
+                print(x)
+            input(f"\n{product_or_courier.capitalize()} {index_choice} has been removed.\nPress enter to continue: ... ")
+            return list
 
-    else:
-        var_1 = "product"
-
-    option = input(
-        f"\nPress 0 to cancel.\nWhich {var_1} would you like to edit?: ... "
-    ).capitalize()
-    if option in list:
-        index_value = list.index(option)
-        app_title()
-        print_list(list)
-        new_value = input(
-            f"\nWhat is the new name for this {var_1}?: ... "
-        ).capitalize()
-        list[index_value] = new_value
-        app_title()
-        print_list(list)
-        input(f"\n{var_1.capitalize()} updated.\nPress enter to continue: ... ")
-        return list
-
-    elif option == "0":
-        return []
-
-    elif option not in list:
-        app_title()
-        input(f"{option} isn't a {var_1}.\nPress enter to continue: ...")
-
-
-def remove_list(filename, list):
-    print_list(list)
-    if filename == "couriers_list.txt":
-        var_1 = "Who"
-        var_2 = "one"
-
-    else:
-        var_1 = "What"
-        var_2 = "product"
-
-    option = input(
-        f"\nPress 0 to cancel.\n{var_1} would you like to remove?: ... "
-    ).capitalize()
-    if option in list:
-        app_title()
-        list.remove(option)
-        print_list(list)
-        input(f"\n{option} has been removed.\nPress enter to continue: ... ")
-
-    elif option == "0":
-        return []
-
-    elif len(list) == 0:
-        input(f"There is no {var_2} to remove.\nPress enter to continue: ... ")
-
-    else:
-        app_title()
-        input(f"{option} isn't a courier.\nPress enter to continue: ... ")
 
 
 # Dictionary Functions

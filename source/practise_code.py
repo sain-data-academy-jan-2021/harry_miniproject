@@ -119,33 +119,50 @@ def printing_practise(list):
         print(index + 1, list[index]["Name"], ":", list[index]["Price"])
         index += 1
 
-def update_item_in_list():
-    if item is product:
-        input(which item would you like to change via index?)
-        if you don't want to change the information then leave blank
-        would you like to update the name of this product?
-        if blank:
-            pass
+def update_item_in_list(product_or_courier, secondary_info, list):
+        for x in list:
+            print(x)
+        index_choice = input(f'\nEnter 0 to cancel.\n\nWhat is the index of the {product_or_courier} you would like to update?: ... ').capitalize()
+        if index_choice == '0':
+            return []
         else:
-            update name
-        would you like to update the price?
-        f blank:
-            pass
+            index = int(index_choice)
+            app_title()
+            print('Leave blank and press enter if you do not want to update')
+            first_value = input('\nWould you like to update the name?: ... ')
+            if first_value == '':
+                pass
+            else:
+                list[index - 1]['Name'] = first_value
+            second_value = input(f'Would you like to update the {secondary_info}?: ... ')
+            if second_value == '':
+                pass
+            else:
+                list[index - 1][secondary_info] = second_value
+            input(f"\n{product_or_courier.capitalize()} {index_choice} has been updated.\nPress enter to continue: ... ")
+            return list
+
+def remove_item_in_list(product_or_courier, list):
+        for x in list:
+            print(x)
+        index_choice = input(f'\nEnter 0 to cancel.\n\nWhat is the index of the {product_or_courier} you would like to remove?: ... ').capitalize()
+        if index_choice == '0':
+            return []
+        elif len(list) == 0:
+            input(f"There is no {product_or_courier} to remove.\nPress enter to continue: ... ")
         else:
-            update price
-    
-    elif item is courier:
-         input(which item would you like to change via index?)
-        if you don't want to change the information then leave blank
-        would you like to update the name of this courier?
-        if blank:
-            pass
-        else:
-            update name
-        would you like to update the phone number?
-        f blank:
-            pass
-        else:
-            update number
-    print hello
-    round 2
+            index = int(index_choice)
+            del list[index - 1]
+            for x in list:
+                print(x)
+            input(f"\n{product_or_courier.capitalize()} {index_choice} has been updated.\nPress enter to continue: ... ")
+            return list
+            
+products = [{'Index': '1', 'Name': 'Harry', 'Phone Number': '07518096938'}]
+
+couriers =[]
+
+app_title()
+remove_item_in_list('courier', couriers)
+
+print(products)
