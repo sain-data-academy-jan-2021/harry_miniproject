@@ -84,41 +84,39 @@ def add_to_database_function(table):
         columns = ['customer_name', 'customer_number', 'customer_address', 'status', 'courier_id']
     print_table_function(table)
     adding_for_loop(columns, table)
-    print('The item has been successfully added.')
     time.sleep(1.5)
     
     
 def adding_for_loop(columns, table):
     string_of_values = ''
     string_of_columns = ''
-    # print('\nPress 0 to cancel operation.') this should be in the right place
+    print('\nPress 0 to cancel operation.')
     for column in columns:
-        # running = True
-        # while running:
+        running = True
         if column == 'status':
             string_of_values += '"Preparing", '
             string_of_columns += column + ', '
-            # running = False
+            running = False
         else:
-            new_value = input(f'What would you like to add as the {column.replace("_", " ")}?: ... ').title() 
-            # if new_value == '0':
-            #     return
-            # else:
-            # if column == 'product_name' or 'phone_number' or 'customer_number':
-            #     if has_value(table, column, new_value):
-            #         print('that already exists')
-            # else:
-            if column == columns[-1]:
-                string_of_values += '"' + new_value + '"'
-                string_of_columns += column
-                # running = False
-            else:
-                string_of_values += '"' + new_value + '"' + ', '
-                string_of_columns += column + ', '
-                # running = False
-    add_to_database_operation(table, string_of_columns, string_of_values)    
+            while running:
+                new_value = input(f'What would you like to add as the {column.replace("_", " ")}?: ... ').title() 
+                if new_value == '0':
+                    print('Returning to the previous menu.')
+                    running = False
+                    return
+                else:
+                    if column == columns[-1]:
+                        string_of_values += '"' + new_value + '"'
+                        string_of_columns += column
+                        running = False
+                    else:
+                        string_of_values += '"' + new_value + '"' + ', '
+                        string_of_columns += column + ', '
+                        running = False
+    add_to_database_operation(table, string_of_columns, string_of_values)
+    print('The item has been successfully added.')    
     
-    
+
 def add_to_database_operation(table, columns, new_values):
     cursor = connection.cursor()
     cursor.execute(f'INSERT INTO {table} ({columns}) VALUES ({new_values})')
