@@ -91,7 +91,7 @@ def add_to_database_function(table):
 def adding_for_loop(columns, table):
     string_of_values = ''
     string_of_columns = ''
-    # print('\nPress 0 to cancel operation.')
+    # print('\nPress 0 to cancel operation.') this should be in the right place
     for column in columns:
         # running = True
         # while running:
