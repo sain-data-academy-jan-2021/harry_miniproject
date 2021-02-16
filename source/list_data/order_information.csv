@@ -1,5 +1,6 @@
-Order,First Name,Last Name,Customer Address,Customer Number,Courier,Status
-1,Liv,Taylor,"16 Glen Park Close, Chellaston, Derby, DE73 5NT",07798750236,Nat,Ready
+Index,First Name,Last Name,Customer Address,Customer Number,Courier,Status
+1,Liv,Taylor,"16 Glen Park Close, Chellaston, Derby, DE73 5NT",07798750236,Nat,Out for delivery
 2,Poppy,Morris,"9 Lilleshall Drive, Elstow, Bedford, MK42 9FG",07798540236,Poppy,Preparing
 3,Harry,Morris,"9 Lilleshall Drive, Elstow, Bedford, MK42 9FG",07793280236,Sarah,Preparing
 4,Mochi,Morris,9 Lilleshall,44576543,Nat,Ready
+5,Harry,Morris,7,61784,Ben,Preparing
