@@ -87,23 +87,18 @@ def order_menu():
     elif option == '2':
         app_utilities.app_title()
         app_databases.add_to_database_function('orders')
-        # app_functions.add_to_list(order_information)
-        # app_data.export_data_from_list("list_data/order_information.csv", order_information)
         order_menu()
     elif option == '3':
         app_utilities.app_title()
-        app_functions.update_order_status(order_information)
-        app_data.export_data_from_list("list_data/order_information.csv", order_information)
+        app_databases.update_order_status()
         order_menu()
     elif option == '4':
         app_utilities.app_title()
-        app_functions.update_list(order_information)
-        app_data.export_data_from_list("list_data/order_information.csv", order_information)
+        app_databases.update_database_operation('orders')
         order_menu()
     elif option == '5':
         app_utilities.app_title()
-        app_functions.remove_from_list(order_information)
-        app_data.export_data_from_list("list_data/order_information.csv", order_information)
+        app_databases.remove_database_operation('orders')
         order_menu()
     elif option == '6':
         main_menu()

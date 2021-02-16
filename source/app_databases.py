@@ -70,36 +70,54 @@ def show_database(columns, table): # this only reads it from the database, where
     cursor.close()
 
 
+def has_value(table, column, value):
+    cursor = connection.cursor()
+    return cursor.execute(f'SELECT 1 from {table} WHERE {column} = {value} LIMIT 1').fetchone() is not None
+
+
 def add_to_database_function(table):
     if table == 'products':
         columns = ['product_name', 'product_price']
     elif table == 'couriers':
         columns = ['courier_name', 'phone_number']
     elif table == 'orders':
-        columns = ['customer_name', 'customer_number','customer_address', 'status', 'courier_id']
+        columns = ['customer_name', 'customer_number', 'customer_address', 'status', 'courier_id']
     print_table_function(table)
-    print('')
     adding_for_loop(columns, table)
     print('The item has been successfully added.')
     time.sleep(1.5)
     
+    
 def adding_for_loop(columns, table):
     string_of_values = ''
     string_of_columns = ''
+    # print('\nPress 0 to cancel operation.')
     for column in columns:
-        print(string_of_values)
+        # running = True
+        # while running:
         if column == 'status':
             string_of_values += '"Preparing", '
             string_of_columns += column + ', '
+            # running = False
         else:
-            new_value = input(f'What would you like to add as the {column.replace("_", " ")}?: ... ').capitalize() 
+            new_value = input(f'What would you like to add as the {column.replace("_", " ")}?: ... ').title() 
+            # if new_value == '0':
+            #     return
+            # else:
+            # if column == 'product_name' or 'phone_number' or 'customer_number':
+            #     if has_value(table, column, new_value):
+            #         print('that already exists')
+            # else:
             if column == columns[-1]:
                 string_of_values += '"' + new_value + '"'
                 string_of_columns += column
+                # running = False
             else:
                 string_of_values += '"' + new_value + '"' + ', '
                 string_of_columns += column + ', '
+                # running = False
     add_to_database_operation(table, string_of_columns, string_of_values)    
+    
     
 def add_to_database_operation(table, columns, new_values):
     cursor = connection.cursor()
@@ -113,6 +131,8 @@ def update_database_function(table):
         columns = ['product_name', 'product_price']
     elif table == 'couriers':
         columns = ['courier_name', 'phone_number']
+    elif table == 'orders':
+        columns = ['customer_name', 'customer_number', 'customer_address', 'courier_id']
     print_table_function(table)    
     print('\nPress 0 to cancel operation.')
     id = input('\nWhat is the id of the item you wish to update?: ... ')
@@ -129,6 +149,25 @@ def update_database_function(table):
                 update_database_operation(table, column, new_value, id)
                 print('The item has been successfully updated.')
                 time.sleep(1.5)
+
+
+def update_order_status():
+    print_table_function('orders')
+    print('\nPress 0 to cancel operation.')
+    id = input('\nWhat is the id of the item you wish to update?: ... ')
+    if id == '0':
+        return
+    else:
+        order_status = ['Preparing', 'Cancelled', 'Out for delivery', 'Delivered']
+        print(order_status)
+        status_choice = input('\nPick a status to change the order to: ... ').capitalize()
+        if status_choice in order_status:
+            update_database_operation('orders', 'status', status_choice, id)
+            print('The item has been successfully updated.')
+            time.sleep(1.5)
+        else:
+            print("The order could not be updated.")
+            time.sleep(1.5)
 
 
 def update_database_operation(table, column, new_value, id):
