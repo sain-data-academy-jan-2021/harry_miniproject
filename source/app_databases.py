@@ -21,6 +21,12 @@ def connect_to_database():
 def disconnect_from_database():
     connection.close()
 
+def execute_database_query(query):
+    cursor = connection.cursor()
+    cursor.execute(query)
+    cursor.close()
+    connection.commit()
+
 
 def read_from_database(table):
     list_from_database = []
@@ -57,19 +63,6 @@ def print_table_function(table):
     print_table(list, table)
 
 
-def show_database(columns, table): # this only reads it from the database, whereas the above works for any
-    cursor = connection.cursor()
-    cursor.execute(f'SELECT {columns} FROM {table}')
-    rows = cursor.fetchall()
-    if table == 'products':
-        for row in rows:
-            print(f'Product ID: {str(row[0])}, Product Name: {row[1]}, Price: {row[2]}')
-    elif table == 'couriers':
-        for row in rows:
-            print(f'Courier ID: {str(row[0])}, Courier Name: {row[1]}, Phone Number: {row[2]}')
-    cursor.close()
-
-
 def has_value(table, column, value):
     cursor = connection.cursor()
     return cursor.execute(f'SELECT 1 from {table} WHERE {column} = {value} LIMIT 1').fetchone() is not None
@@ -98,6 +91,10 @@ def adding_for_loop(columns, table):
             string_of_columns += column + ', '
             running = False
         else:
+            if column == 'courier_id':
+                print('')
+                print_table_function('couriers')
+                print('')
             while running:
                 new_value = input(f'What would you like to add as the {column.replace("_", " ")}?: ... ').title() 
                 if new_value == '0':
@@ -113,16 +110,47 @@ def adding_for_loop(columns, table):
                         string_of_values += '"' + new_value + '"' + ', '
                         string_of_columns += column + ', '
                         running = False
-    add_to_database_operation(table, string_of_columns, string_of_values)
-    print('The item has been successfully added.')    
+#    add_to_database_operation(table, string_of_columns, string_of_values)
+    execute_database_query(f'INSERT INTO {table} ({string_of_columns}) VALUES ({string_of_values})')
+    # if table == 'orders':
+    #     last_id = cursor.lastrowid
+    #     add_to_basket(last_id)   
+    print('The information has been successfully added.')    
     
 
 def add_to_database_operation(table, columns, new_values):
+    execute_database_query(f'INSERT INTO {table} ({columns}) VALUES ({new_values})')
+
+
+def add_order_to_database_operation():
     cursor = connection.cursor()
-    cursor.execute(f'INSERT INTO {table} ({columns}) VALUES ({new_values})')
+    customer_name = input('What would you like to add as the customer name?: ... ')
+    customer_number = input('What would you like to add as the customer number?: ... ')
+    customer_address = input('What would you like to add as the customer name?: ... ')
+    print_table_function('couriers')
+    courier_id = input('What would you like to add as the customer name?: ... ')
+    cursor.execute(f'INSERT INTO orders (customer_name, customer_number, customer_address, status, courier_id) VALUES ({customer_name}, {customer_number}, {customer_address}, "Preparing", {courier_id})')
+    id = cursor.lastrowid
+    print_table_function('products')
+    basket = input('Enter Product IDs seperated by a comma and a space: ... ')
+    basket_list = basket.split(', ')
+    for product_id in basket_list:
+        execute_database_query(f'INSERT INTO basket (order_id, product_id) VALUES ({id}, {product_id}')
     cursor.close()
     connection.commit()
+    
 
+def add_to_basket(id):
+    cursor = connection.cursor()
+    id = cursor.lastrowid
+    print_table_function('products')
+    basket = input('Enter Product IDs seperated by a comma and a space: ... ')
+    basket_list = basket.split(', ')
+    for i in basket_list:
+        execute_database_query(f'INSERT INTO basket (order_id, product_id) VALUES ({id}, {i}')
+    cursor.close()
+    connection.commit()
+    
 
 def update_database_function(table):
     if table == 'products':
@@ -196,3 +224,8 @@ def remove_database_operation(table, id):
     
 
 connection = connect_to_database() # anything to do with connection has to come to this file
+
+# add_to_database_function('orders')
+# add_to_basket()
+# add_order_to_database_operation()
+# disconnect_from_database()

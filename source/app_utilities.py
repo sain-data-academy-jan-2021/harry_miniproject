@@ -9,3 +9,4 @@ def app_title():
     print("-" * 67)
     print(title)
     print("-" * 67 + "\n")
+    

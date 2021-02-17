@@ -1,5 +1,7 @@
 import unittest
-from unittest.mock import patch
+from unittest.mock import patch, Mock
+
+from app_databases import adding_for_loop
 # from rebuild import index_choice, remove_list_operation, remove_from_list, update_list_operation, update_list, last_num, add_list_operation
 
 
@@ -64,10 +66,60 @@ from unittest.mock import patch
     
 class TestDatabaseMethods(unittest.TestCase):
     
-    def test_function(self):
-        expected = something
-        actual = function to test
-        self.assertEqual(expected, actual)
+    # def test_function(self):
+    #     expected = something
+    #     actual = function to test
+    #     self.assertEqual(expected, actual)
     
-if __name__ == '__main__': # will only run if the main program is run and not just if its imported.
+
+    @patch("builtins.input")
+    @patch("app_databases.execute_database_query")
+    def test_adding_for_loop(self, mock_execute, mock_input):
+
+    # Assemble
+        table = 'products'
+        columns = ['product_name', 'product_price']
+        mock_input.side_effect = ['Soda', '0.75']   
+        expected = 'INSERT INTO products (product_name, product_price) VALUES ("Soda", "0.75")'
+    
+    # Act
+        adding_for_loop(columns, table)
+
+    # Assert
+        mock_execute.assert_called_with(expected)
+
+    @patch("builtins.input")
+    @patch("app_databases.execute_database_query")
+    def test_adding_for_loop_and_drop_out(self, mock_execute, mock_input):
+
+    # Assemble
+        table = 'products'
+        columns = ['product_name', 'product_price']
+        mock_input.side_effect = ['0']
+    
+    # Act
+        adding_for_loop(columns, table)
+
+    # Assert
+        assert mock_execute.call_count == 0
+
+
+    @patch("builtins.input")
+    @patch("app_databases.execute_database_query")
+    def test_adding_orders_for_loop(self, mock_execute, mock_input):
+
+    # Assemble
+        table = 'orders'
+        columns = ['customer_name', 'customer_number', 'customer_address', 'status', 'courier_id']
+        mock_input.side_effect = ['ABC', '123', '12Highst','12']   
+        expected = 'INSERT INTO orders (customer_name, customer_number, customer_address, status, courier_id) VALUES ("Abc", "123", "12Highst", "Preparing", "12")'
+    
+    # Act
+        adding_for_loop(columns, table)
+
+    # Assert
+        mock_execute.assert_called_with(expected)
+
+
+if __name__ == '__main__': 
     unittest.main()
