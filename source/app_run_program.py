@@ -15,7 +15,7 @@ def main_menu():
         app_functions.exit_app()
     else:
         app_functions.incorrect_input()
-        time.sleep(1.5)
+        time.sleep(1)
         main_menu()
 
 def product_menu():
@@ -23,7 +23,7 @@ def product_menu():
     option = app_menu_displays.product_menu_display()
     if option == '1':
         app_utilities.app_title()
-        app_databases.print_table_function('products')
+        app_databases.print_table_function('products', f'SELECT * FROM products')
         input('\nPress Enter to continue. ')
         product_menu()
     elif option == '2':
@@ -44,7 +44,7 @@ def product_menu():
         app_functions.exit_app()
     else:
         app_functions.incorrect_input()
-        time.sleep(1.5)
+        time.sleep(1)
         product_menu()
 
 def courier_menu():
@@ -52,7 +52,7 @@ def courier_menu():
     option = app_menu_displays.courier_menu_display()
     if option == '1':
         app_utilities.app_title()
-        app_databases.print_table_function('couriers')
+        app_databases.print_table_function('couriers', f'SELECT * FROM couriers')
         input('\nPress Enter to continue. ')
         courier_menu()
     elif option == '2':
@@ -73,7 +73,7 @@ def courier_menu():
         app_functions.exit_app()
     else:
         app_functions.incorrect_input()
-        time.sleep(1.5)
+        time.sleep(1)
         product_menu()
         
 def order_menu():
@@ -81,7 +81,7 @@ def order_menu():
     option = app_menu_displays.order_menu_display()
     if option == '1':
         app_utilities.app_title()
-        app_databases.print_table_function('orders')
+        app_databases.print_table_function('orders', f'SELECT * FROM orders')
         input('\nPress Enter to continue. ')
         order_menu()
     elif option == '2':
@@ -94,11 +94,11 @@ def order_menu():
         order_menu()
     elif option == '4':
         app_utilities.app_title()
-        app_databases.update_database_operation('orders')
+        app_databases.update_database_function('orders')
         order_menu()
     elif option == '5':
         app_utilities.app_title()
-        app_databases.remove_database_operation('orders')
+        app_databases.remove_database_function('orders')
         order_menu()
     elif option == '6':
         main_menu()
@@ -106,7 +106,7 @@ def order_menu():
         app_functions.exit_app()
     else:
         app_functions.incorrect_input()
-        time.sleep(1.5)
+        time.sleep(1)
         order_menu()
     
 app_utilities.app_title()
