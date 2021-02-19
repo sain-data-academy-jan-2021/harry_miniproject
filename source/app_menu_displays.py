@@ -11,5 +11,5 @@ def courier_menu_display():
     return choice
 
 def order_menu_display():
-    choice = input("1)\tShow Order List\n2)\tAdd a New Order\n3)\tUpdate an Order Status\n4)\tUpdate an Order\n5)\tRemove an Order\n6)\tMain Menu\n7)\tExit App\n\nPlease select an option: ... ")
+    choice = input("1)\tShow Customer Information\n2)\tAdd a New Order\n3)\tUpdate an Order Status\n4)\tUpdate an Order\n5)\tRemove an Order\n6)\tMain Menu\n7)\tExit App\n\nPlease select an option: ... ")
     return choice

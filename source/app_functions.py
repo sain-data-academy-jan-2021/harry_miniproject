@@ -17,12 +17,12 @@ def exit_app():
 
 def welcome_app():
     print("Welcome to the Jammie Dodger Cafe!")
-    time.sleep(1.5)
+    time.sleep(1)
 
 
 def incorrect_input():
     print("Input not recognised. Returning to previous screen: ... ")
-    time.sleep(1.5)
+    time.sleep(0.5)
 
 def index_choice(process):
     print('\nPress 0 to cancel operation.')
