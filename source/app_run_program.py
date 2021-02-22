@@ -1,5 +1,4 @@
-import time, app_menu_displays, app_functions, app_data, app_databases, app_utilities
-from app_data import product_information, courier_information, order_information
+import time, app_menu_displays, app_functions, app_databases, app_utilities
 
 
 def main_menu():
@@ -82,7 +81,14 @@ def order_menu():
     if option == '1':
         app_utilities.app_title()
         app_databases.print_table_function('orders', f'SELECT * FROM orders')
-        input('\nPress Enter to continue. ')
+        print('\nTo see the products ordered for a customer:')
+        id = app_databases.choose_an_existing_id('orders')
+        if id == '0':
+            order_menu()
+        print('')
+        customer_order = app_databases.read_from_database(f'SELECT p.product_name, p.product_price FROM customer_orders c JOIN products p ON c.product_id = p.product_id WHERE c.order_id = {id}')
+        app_databases.print_order_table(customer_order) 
+        input('\nPress Enter to continue.')       
         order_menu()
     elif option == '2':
         app_utilities.app_title()
