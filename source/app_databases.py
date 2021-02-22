@@ -56,7 +56,6 @@ def print_table_function(table, query):
     list = read_from_database(query)
     print_table(list, table)
 
-
 # ---------------------------------------------------------------------------
     
 def execute_sql_select(query):
@@ -105,10 +104,11 @@ def add_to_basket():
 
 
 def remove_database_function(table):
+    id_name = get_column_names(f'SELECT * FROM {table}')[0]
     id = choose_an_existing_id(table)
     if id == '0':
         return
-    execute_sql_update(f'DELETE FROM {table} WHERE id = {id}')
+    execute_sql_update(f'DELETE FROM {table} WHERE {id_name} = {id}')
     if table == 'orders':
         execute_sql_update(f'DELETE FROM customer_orders WHERE order_id = {id}')
     print('\nThe item has been successfully removed.')
@@ -178,6 +178,7 @@ def add_to_database_function(table):
             new_value = choose_an_existing_id('couriers')
             if new_value == '0':
                 return
+            new_value = str(new_value)
             string_of_columns, string_of_values = columns_and_values(column, new_value, column_names, string_of_values, string_of_columns)
             print('')
             continue
@@ -186,7 +187,7 @@ def add_to_database_function(table):
             if new_value == '0':
                 return
             string_of_columns, string_of_values = columns_and_values(column, new_value, column_names, string_of_values, string_of_columns)
-            print('')
+            continue
         new_value = input(f'What would you like to add as the {column.replace("_", " ")}? (Enter 0 to cancel): ... ').title()
         if new_value == '0':
             return
@@ -212,12 +213,12 @@ def choose_an_existing_id(table):
             else:
                 print('ID not recognised. Please enter an existing ID.')
         except ValueError:
-            print('ID not recognised. Please enter an ID number.')
-    print(id)        
+            print('ID not recognised. Please enter an ID number.')    
     return id
 
 
 def update_database_function(table):
+    id_name = get_column_names(f'SELECT * FROM {table}')[0]
     column_names = get_column_names(f'SELECT * FROM {table}')[1:]
     print_table_function(table, f'SELECT * FROM {table}')
     print('')
@@ -231,8 +232,14 @@ def update_database_function(table):
         if new_value == '':
             pass
         else:
-            execute_sql_update(f'UPDATE {table} SET {column} = "{new_value}" WHERE id = {id}')
+            execute_sql_update(f'UPDATE {table} SET {column} = "{new_value}" WHERE {id_name} = {id}')
             
+
+def print_order_table(list):
+    header = ['Product Name', 'Price']
+    rows = [x.values() for x in list]
+    print(tabulate(rows, header, tablefmt = 'simple'))    
+    
             
 connection = connect_to_database() # anything to do with connection has to come to this file
 
