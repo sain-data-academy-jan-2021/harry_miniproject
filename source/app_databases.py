@@ -79,7 +79,7 @@ def choose_order_items():
     print_table_function('products', f'SELECT * FROM products')
     print('')
     while True:
-        id = input('Please choose an a product ID you wish to add. When your order is complete enter 0: ... ')
+        id = input('Please choose a product ID you wish to add. When your order is complete enter 0: ... ')
         try:
             id = int(id)
             if id == 0:
@@ -242,5 +242,6 @@ def print_order_table(list):
     
             
 connection = connect_to_database() # anything to do with connection has to come to this file
+print(columns_and_values('product_name', 'Orange', ['product_name', 'product_price'], [], []))
 
 # disconnect_from_database()
