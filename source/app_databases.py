@@ -218,8 +218,9 @@ def choose_an_existing_id(table):
 
 
 def update_database_function(table):
-    id_name = get_column_names(f'SELECT * FROM {table}')[0]
-    column_names = get_column_names(f'SELECT * FROM {table}')[1:]
+    column_names_from_database = get_column_names(f'SELECT * FROM {table}')
+    id_name = column_names_from_database[0]
+    column_names = column_names_from_database[1:]
     print_table_function(table, f'SELECT * FROM {table}')
     print('')
     id = choose_an_existing_id(table)
@@ -228,7 +229,7 @@ def update_database_function(table):
     for column in column_names:
         if column == 'status':
             continue
-        new_value = input(f'What would you like to replace the {column.replace("_", " ")} with?: ... ').capitalize()
+        new_value = input(f'What would you like to replace the {column.replace("_", " ")} with?: ... ').title()
         if new_value == '':
             pass
         else:
@@ -242,6 +243,5 @@ def print_order_table(list):
     
             
 connection = connect_to_database() # anything to do with connection has to come to this file
-print(columns_and_values('product_name', 'Orange', ['product_name', 'product_price'], [], []))
 
 # disconnect_from_database()
