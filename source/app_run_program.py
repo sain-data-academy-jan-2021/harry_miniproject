@@ -81,12 +81,12 @@ def order_menu():
     if option == '1':
         app_utilities.app_title()
         app_databases.print_table_function('orders', f'SELECT * FROM orders')
-        print('\nTo see the products ordered for a customer:')
+        print('\nTo see the products ordered for a customer.\n')
         id = app_databases.choose_an_existing_id('orders')
         if id == '0':
             order_menu()
         print('')
-        customer_order = app_databases.read_from_database(f'SELECT p.product_name, p.product_price FROM customer_orders c JOIN products p ON c.product_id = p.product_id WHERE c.order_id = {id}')
+        customer_order = app_databases.read_from_database(f'SELECT p.product_id, p.product_name, p.product_price FROM customer_orders c JOIN products p ON c.product_id = p.product_id WHERE c.order_id = {id}')
         app_databases.print_order_table(customer_order) 
         input('\nPress Enter to continue.')       
         order_menu()
@@ -104,11 +104,15 @@ def order_menu():
         order_menu()
     elif option == '5':
         app_utilities.app_title()
-        app_databases.remove_database_function('orders')
+        app_databases.update_basket()
         order_menu()
     elif option == '6':
-        main_menu()
+        app_utilities.app_title()
+        app_databases.remove_database_function('orders')
+        order_menu()
     elif option == '7':
+        main_menu()
+    elif option == '8':
         app_functions.exit_app()
     else:
         app_functions.incorrect_input()
