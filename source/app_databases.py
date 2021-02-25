@@ -93,6 +93,27 @@ def choose_order_items():
     return basket
     
     
+def update_basket():
+    cursor = connection.cursor()
+    print_table_function('orders', f'SELECT * FROM orders')
+    print('')
+    order_id = choose_an_existing_id('orders')
+    if order_id == '0':
+        return
+    customer_order = read_from_database(f'SELECT p.product_id, p.product_name, p.product_price FROM customer_orders c JOIN products p ON c.product_id = p.product_id WHERE c.order_id = {order_id}')
+    print_order_table(customer_order) 
+    print(customer_order)
+    execute_sql_update(f'DELETE FROM customer_orders WHERE order_id = {order_id}')
+    print('\nPlease reselect you order, including any changes.')
+    basket = choose_order_items()
+    print(basket)
+    for product_id in basket:
+        execute_sql_update(f'INSERT INTO customer_orders (order_id, product_id) VALUES ({order_id}, {product_id})')
+    print('ITEMS UPDATED')
+    cursor.close()
+    connection.commit()
+    
+    
 def add_to_basket():
     cursor = connection.cursor()
     order_id = execute_sql_select('SELECT MAX(order_id) FROM orders')[0][0]
@@ -105,26 +126,33 @@ def add_to_basket():
 
 def remove_database_function(table):
     id_name = get_column_names(f'SELECT * FROM {table}')[0]
+    print_table_function(table, f'SELECT * FROM {table}')
+    print('')
     id = choose_an_existing_id(table)
     if id == '0':
         return
-    execute_sql_update(f'DELETE FROM {table} WHERE {id_name} = {id}')
-    if table == 'orders':
-        execute_sql_update(f'DELETE FROM customer_orders WHERE order_id = {id}')
-    print('\nThe item has been successfully removed.')
+    try:
+        execute_sql_update(f'DELETE FROM {table} WHERE {id_name} = {id}')
+        if table == 'orders':
+            execute_sql_update(f'DELETE FROM customer_orders WHERE order_id = {id}')
+        print('\nThe item has been successfully removed.')
+    except Exception:
+        print('\nCannot delete something that is already in an existing order. Returning to previous screen.')
+        time.sleep(2.5)
     
     
 def update_order_status():
     print_table_function('orders', f'SELECT * FROM orders')
     print('')
     order_status = ['Preparing', 'Cancelled', 'Out for delivery', 'Delivered']
-    print('\nPress 0 to cancel operation.')
+    print('Press 0 to cancel operation.')
     id = choose_an_existing_id('orders')
     if id == '0':
         return
+    print('')
     print(order_status)
     while True:
-        status_choice = input('\nPick a status to change the order to: ... ').capitalize()
+        status_choice = input('\nWhat is the status being updated to?: ... ').capitalize()
         if status_choice in order_status:
             execute_sql_update(f'UPDATE orders SET status = "{status_choice}" WHERE order_id = {id}')
             break
@@ -226,6 +254,7 @@ def update_database_function(table):
     id = choose_an_existing_id(table)
     if id == '0':
         return
+    print('\nLeave blank if you do not want to update.\n')
     for column in column_names:
         if column == 'status':
             continue
@@ -237,11 +266,12 @@ def update_database_function(table):
             
 
 def print_order_table(list):
-    header = ['Product Name', 'Price']
+    header = ['Product ID', 'Product Name', 'Price']
     rows = [x.values() for x in list]
     print(tabulate(rows, header, tablefmt = 'simple'))    
     
             
 connection = connect_to_database() # anything to do with connection has to come to this file
-
+# print(read_from_database(f'SELECT p.product_id, p.product_name, p.product_price FROM customer_orders c JOIN products p ON c.product_id = p.product_id WHERE c.order_id = 1'))
+# update_basket()
 # disconnect_from_database()

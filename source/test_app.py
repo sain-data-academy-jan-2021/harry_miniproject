@@ -1,6 +1,6 @@
 import unittest
-from unittest.mock import patch, Mock
-from app_databases import choose_order_items, add_to_basket, remove_database_function, update_order_status, columns_and_values, existing_products, add_to_database_function, choose_an_existing_id, update_database_function
+from unittest.mock import patch, Mock, call
+from app_databases import choose_order_items, add_to_basket, remove_database_function, update_order_status, columns_and_values, existing_products, add_to_database_function, choose_an_existing_id, update_database_function, update_basket
 
 class TestDatabaseMethods(unittest.TestCase):
 
@@ -508,6 +508,26 @@ class TestDatabaseMethods(unittest.TestCase):
 
         mock_execute.assert_called_with(expected)
         self.assertEqual(mock_execute.call_count, 1)
+
+#------------------------------------------------------
+
+    # @patch('app_databases.choose_an_existing_id')
+    # @patch('app_databases.read_from_database')
+    # @patch('app_databases.execute_sql_update')
+    # @patch('app_databases.choose_order_items')
+    # def test_update_basket(self, mock_basket, mock_execute, mock_read, mock_id):
+    #     mock_id.return_value = 1
+    #     mock_read.return_value = [{'product_id': 1, 'product_name': 'Fanta', 'product_price': '2.99'}, {'product_id': 5, 'product_name': 'Apple', 'product_price': '0.30'}]
+    #     mock_basket = ['1', '2']
+    #     expected2 = 'INSERT INTO customer_orders (order_id, product_id) VALUES (1, "2")'
+    #     expected1 = 'DELETE FROM customer_orders WHERE order_id = 1'
+        
+    #     update_basket()
+    #     # mock_execute.assert_has_calls([call(self.expected), call(self.val)])
+    #     mock_execute.assert_has_calls([call(expected1), call(expected2)])
+
+    #     # mock_execute.assert_called_with(expected)
+    #     # self.assertEqual(mock_execute.call_count, 3)
 
 
 if __name__ == '__main__': 
