@@ -2,7 +2,6 @@ import pymysql, os, time, app_utilities
 from dotenv import load_dotenv
 from tabulate import tabulate
 
-
 def connect_to_database():
     load_dotenv()
     host = os.environ.get("mysql_host")
@@ -136,9 +135,10 @@ def remove_database_function(table):
         if table == 'orders':
             execute_sql_update(f'DELETE FROM customer_orders WHERE order_id = {id}')
         print('\nThe item has been successfully removed.')
-    except Exception:
+    except pymysql.err.IntegrityError:
         print('\nCannot delete something that is already in an existing order. Returning to previous screen.')
         time.sleep(2.5)
+
     
     
 def update_order_status():
@@ -195,32 +195,38 @@ def add_to_database_function(table):
     string_of_columns = ''
     string_of_values = ''
     column_names = get_column_names(f'SELECT * FROM {table}')[1:]
-    for column in column_names:
-        if column == 'status':
-            string_of_columns, string_of_values = columns_and_values(column, 'Preparing', column_names, string_of_values, string_of_columns)
-            continue
-        elif column == 'courier_id':
-            print('')
-            print_table_function('couriers', f'SELECT * FROM couriers')
-            print('')
-            new_value = choose_an_existing_id('couriers')
+    try:
+        for column in column_names:
+            if column == 'status':
+                string_of_columns, string_of_values = columns_and_values(column, 'Preparing', column_names, string_of_values, string_of_columns)
+                continue
+            elif column == 'courier_id':
+                print('')
+                print_table_function('couriers', f'SELECT * FROM couriers')
+                print('')
+                new_value = choose_an_existing_id('couriers')
+                if new_value == '0':
+                    return
+                new_value = str(new_value)
+                string_of_columns, string_of_values = columns_and_values(column, new_value, column_names, string_of_values, string_of_columns)
+                print('')
+                continue
+            elif column == 'product_name':
+                new_value = existing_products()
+                if new_value == '0':
+                    return
+                string_of_columns, string_of_values = columns_and_values(column, new_value, column_names, string_of_values, string_of_columns)
+                continue
+            new_value = input(f'What would you like to add as the {column.replace("_", " ")}? (Enter 0 to cancel): ... ').title()
             if new_value == '0':
                 return
-            new_value = str(new_value)
             string_of_columns, string_of_values = columns_and_values(column, new_value, column_names, string_of_values, string_of_columns)
-            print('')
-            continue
-        elif column == 'product_name':
-            new_value = existing_products()
-            if new_value == '0':
-                return
-            string_of_columns, string_of_values = columns_and_values(column, new_value, column_names, string_of_values, string_of_columns)
-            continue
-        new_value = input(f'What would you like to add as the {column.replace("_", " ")}? (Enter 0 to cancel): ... ').title()
-        if new_value == '0':
-            return
-        string_of_columns, string_of_values = columns_and_values(column, new_value, column_names, string_of_values, string_of_columns)
-    execute_sql_update(f'INSERT INTO {table} ({string_of_columns}) VALUES ({string_of_values})')
+        print(string_of_values)
+        execute_sql_update(f'INSERT INTO {table} ({string_of_columns}) VALUES ({string_of_values})')
+    except pymysql.err.DataError:
+        print('The data entered was out of range of the column. Returning to previous screen.')
+        time.sleep(2.5)
+        return
     if table == 'orders':
         print('')
         add_to_basket()
@@ -272,6 +278,5 @@ def print_order_table(list):
     
             
 connection = connect_to_database() # anything to do with connection has to come to this file
-# print(read_from_database(f'SELECT p.product_id, p.product_name, p.product_price FROM customer_orders c JOIN products p ON c.product_id = p.product_id WHERE c.order_id = 1'))
-# update_basket()
+
 # disconnect_from_database()

@@ -1,8 +1,8 @@
-import unittest
+import unittest, pymysql
 from unittest.mock import patch, Mock, call
 from app_databases import choose_order_items, add_to_basket, remove_database_function, update_order_status, columns_and_values, existing_products, add_to_database_function, choose_an_existing_id, update_database_function, update_basket
 
-class TestDatabaseMethods(unittest.TestCase):
+class TestChooseOrderItems(unittest.TestCase):
 
     @patch('app_databases.execute_sql_select')
     @patch('builtins.input')
@@ -51,7 +51,7 @@ class TestDatabaseMethods(unittest.TestCase):
         
         assert expected == actual
         
-#-----------------------------------------------------
+class TestAddToBasket(unittest.TestCase):
 
     @patch('app_databases.execute_sql_select')
     @patch('app_databases.choose_order_items')
@@ -65,7 +65,7 @@ class TestDatabaseMethods(unittest.TestCase):
         
         mock_execute_update.assert_called_with(expected)
         
-#-----------------------------------------------------
+class TestRemoveFromDatabase(unittest.TestCase):
 
     @patch('app_databases.get_column_names')
     @patch('app_databases.choose_an_existing_id')
@@ -120,8 +120,24 @@ class TestDatabaseMethods(unittest.TestCase):
         remove_database_function(table)
           
         self.assertEqual(mock_execute.call_count, 0)
+    
+    
+    @patch('app_databases.get_column_names')
+    @patch('app_databases.choose_an_existing_id')
+    @patch('app_databases.execute_sql_update')
+    @patch('builtins.print')
+    def test_raise_error_remove_an_order_from_a_database(self, mock_print, mock_execute, mock_existing_id, mock_get_column):      
+        table = 'couriers'
+        mock_get_column.return_value = ['courier_id', 'courier_name']
+        mock_existing_id.return_value = '1'
+        mock_execute.side_effect = pymysql.err.IntegrityError
         
-#---------------------------------------------------------     
+        remove_database_function(table)
+
+        mock_print.assert_called_with('\nCannot delete something that is already in an existing order. Returning to previous screen.')
+        
+class TestUpdateStatusDatabase(unittest.TestCase):  
+  
     @patch('app_databases.choose_an_existing_id') 
     @patch('builtins.input')   
     @patch('app_databases.execute_sql_update')
@@ -159,7 +175,7 @@ class TestDatabaseMethods(unittest.TestCase):
         
         mock_execute.assert_called_with(expected) 
 
-#--------------------------------------------------
+class TestColumnsAndValues(unittest.TestCase):
 
     def test_columns_and_values(self):
         column_names = ['product_name', 'product_price']
@@ -186,7 +202,7 @@ class TestDatabaseMethods(unittest.TestCase):
         
         self.assertEqual (actual, expected)
     
-#----------------------------------------------------
+class TestExistingProducts(unittest.TestCase):
     
     @patch('app_databases.execute_sql_select')
     @patch('builtins.input')
@@ -235,7 +251,7 @@ class TestDatabaseMethods(unittest.TestCase):
         
         self.assertEqual (actual, expected)
     
-#-----------------------------------------------------------
+class TestAddToDatabase(unittest.TestCase):
     
     @patch('app_databases.get_column_names')
     @patch('builtins.input')
@@ -286,6 +302,24 @@ class TestDatabaseMethods(unittest.TestCase):
     @patch('app_databases.get_column_names')
     @patch('app_databases.existing_products')
     @patch('builtins.input')
+    @patch('app_databases.execute_sql_update')  
+    @patch('builtins.print')        
+    def test_catches_error_thrown_with_large_value_add_product_to_database_function(self, mock_print, mock_execute, mock_input, mock_existing_product, mock_get_column):           
+        table = 'products'
+        mock_get_column.return_value = ['product_id', 'product_name', 'product_price']     
+        mock_existing_product.return_value = 'Orange'
+        mock_input.return_value = '999999.99'
+        
+        mock_execute.side_effect = pymysql.err.DataError()
+        
+        add_to_database_function(table)
+
+        mock_print.assert_called_with('The data entered was out of range of the column. Returning to previous screen.')
+              
+              
+    @patch('app_databases.get_column_names')
+    @patch('app_databases.existing_products')
+    @patch('builtins.input')
     @patch('app_databases.execute_sql_update')          
     def test_cancel_while_adding_product_to_database_function(self, mock_execute, mock_input, mock_existing_product, mock_get_column):           
         table = 'products'
@@ -330,7 +364,8 @@ class TestDatabaseMethods(unittest.TestCase):
                
         self.assertEqual(mock_execute.call_count, 0)
   
-#------------------------------------------------------------
+class TestChooseAnExistingID(unittest.TestCase):
+    
     @patch('app_databases.get_column_names')
     @patch('app_databases.execute_sql_select')
     @patch('builtins.input')
@@ -375,7 +410,7 @@ class TestDatabaseMethods(unittest.TestCase):
         
         self.assertEqual (actual, expected)        
 
-#-------------------------------------------------------------
+class TestUpdateDatabase(unittest.TestCase):
 
     @patch('app_databases.get_column_names')
     @patch('app_databases.choose_an_existing_id')
@@ -509,25 +544,37 @@ class TestDatabaseMethods(unittest.TestCase):
         mock_execute.assert_called_with(expected)
         self.assertEqual(mock_execute.call_count, 1)
 
-#------------------------------------------------------
 
-    # @patch('app_databases.choose_an_existing_id')
-    # @patch('app_databases.read_from_database')
-    # @patch('app_databases.execute_sql_update')
-    # @patch('app_databases.choose_order_items')
-    # def test_update_basket(self, mock_basket, mock_execute, mock_read, mock_id):
-    #     mock_id.return_value = 1
-    #     mock_read.return_value = [{'product_id': 1, 'product_name': 'Fanta', 'product_price': '2.99'}, {'product_id': 5, 'product_name': 'Apple', 'product_price': '0.30'}]
-    #     mock_basket = ['1', '2']
-    #     expected2 = 'INSERT INTO customer_orders (order_id, product_id) VALUES (1, "2")'
-    #     expected1 = 'DELETE FROM customer_orders WHERE order_id = 1'
+class TestUpdateBasket(unittest.TestCase):
+
+    @patch('app_databases.choose_an_existing_id')
+    @patch('app_databases.read_from_database')
+    @patch('app_databases.execute_sql_update')
+    @patch('app_databases.choose_order_items')
+    def test_update_basket(self, mock_basket, mock_execute, mock_read, mock_id):
+        mock_id.return_value = 1
+        mock_read.return_value = [{'product_id': 1, 'product_name': 'Fanta', 'product_price': '2.99'}, {'product_id': 5, 'product_name': 'Apple', 'product_price': '0.30'}]
+        mock_basket.return_value = ['1', '2']
+        expected = 'INSERT INTO customer_orders (order_id, product_id) VALUES (1, 2)'
         
-    #     update_basket()
-    #     # mock_execute.assert_has_calls([call(self.expected), call(self.val)])
-    #     mock_execute.assert_has_calls([call(expected1), call(expected2)])
+        update_basket()
 
-    #     # mock_execute.assert_called_with(expected)
-    #     # self.assertEqual(mock_execute.call_count, 3)
+        mock_execute.assert_called_with(expected)
+        self.assertEqual(mock_execute.call_count, 3)
+
+
+    @patch('app_databases.choose_an_existing_id')
+    @patch('app_databases.execute_sql_update')
+    @patch('app_databases.choose_order_items')
+    def test_cancel_out_of_update_basket(self, mock_basket, mock_execute, mock_id):
+        mock_id.return_value = '0'
+        
+        update_basket()
+
+        self.assertEqual(mock_execute.call_count, 0)
+        self.assertEqual(mock_execute.call_count, 0)
+
+
 
 
 if __name__ == '__main__': 
