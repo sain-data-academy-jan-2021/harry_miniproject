@@ -1,5 +1,5 @@
 import unittest, pymysql
-from unittest.mock import patch, Mock, call
+from unittest.mock import patch
 from app_databases import choose_order_items, add_to_basket, remove_database_function, update_order_status, columns_and_values, existing_products, add_to_database_function, choose_an_existing_id, update_database_function, update_basket
 
 class TestChooseOrderItems(unittest.TestCase):
@@ -101,7 +101,7 @@ class TestRemoveFromDatabase(unittest.TestCase):
         table = 'orders'
         mock_get_column.return_value = ['order_id', 'customer_name']
         mock_existing_id.return_value = '1'
-        expected = 'DELETE FROM customer_orders WHERE order_id = 1'
+        expected = 'DELETE FROM orders WHERE order_id = 1'
         
         remove_database_function(table)
         
@@ -571,7 +571,6 @@ class TestUpdateBasket(unittest.TestCase):
         
         update_basket()
 
-        self.assertEqual(mock_execute.call_count, 0)
         self.assertEqual(mock_execute.call_count, 0)
 
 

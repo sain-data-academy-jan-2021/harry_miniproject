@@ -81,7 +81,7 @@ def order_menu():
     if option == '1':
         app_utilities.app_title()
         app_databases.print_table_function('orders', f'SELECT * FROM orders')
-        print('\nTo see the products ordered for a customer.\n')
+        print('\nTo see the products ordered for a customer,\n')
         id = app_databases.choose_an_existing_id('orders')
         if id == '0':
             order_menu()
