@@ -100,8 +100,8 @@ def update_basket():
     if order_id == '0':
         return
     customer_order = read_from_database(f'SELECT p.product_id, p.product_name, p.product_price FROM customer_orders c JOIN products p ON c.product_id = p.product_id WHERE c.order_id = {order_id}')
+    print('')
     print_order_table(customer_order) 
-    print(customer_order)
     execute_sql_update(f'DELETE FROM customer_orders WHERE order_id = {order_id}')
     print('\nPlease reselect you order, including any changes.')
     basket = choose_order_items()
@@ -131,9 +131,9 @@ def remove_database_function(table):
     if id == '0':
         return
     try:
-        execute_sql_update(f'DELETE FROM {table} WHERE {id_name} = {id}')
         if table == 'orders':
             execute_sql_update(f'DELETE FROM customer_orders WHERE order_id = {id}')
+        execute_sql_update(f'DELETE FROM {table} WHERE {id_name} = {id}')
         print('\nThe item has been successfully removed.')
     except pymysql.err.IntegrityError:
         print('\nCannot delete something that is already in an existing order. Returning to previous screen.')
