@@ -279,4 +279,4 @@ def print_order_table(list):
             
 connection = connect_to_database() # anything to do with connection has to come to this file
 
-# disconnect_from_database()
+# disconnect_from_database() change
